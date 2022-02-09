@@ -5,7 +5,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import LiquidityComponent from "./LiquidityComponent";
 import RemoveLiquidityComponent from "./RemoveLiquidityComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./styles/Transaction.css";
+import "./styles/Liquidity.css";
 
 function getLibrary(provider, connector) {
   return new Web3Provider(provider); // this will vary according to whether you use e.g. ethers or web3.js

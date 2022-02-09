@@ -1,19 +1,19 @@
-.Transaction {
+.SwapComponent {
   text-align: left;
 }
 
-.Transaction-logo {
+.SwapComponent-logo {
   height: 40vmin;
   pointer-events: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .Transaction-logo {
+  .SwapComponent-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
 
-.Transaction-header {
+.SwapComponent-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -24,7 +24,7 @@
   color: hsl(0, 0%, 100%);
 }
 
-.Transaction-link {
+.SwapComponent-link {
   color: #61dafb;
 }
 
