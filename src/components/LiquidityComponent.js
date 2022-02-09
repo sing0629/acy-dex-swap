@@ -1261,7 +1261,7 @@ const LiquidityComponent = () => {
                     {liquidityStatus && <p> {liquidityStatus}</p>}
                 </Alert>
 
-                <h2>Your positions</h2>
+                <h2></h2>
                 {userLiquidityPositions.map((position) => (
                     <Alert variant="dark">
                         {Object.values(position).map((field) => (

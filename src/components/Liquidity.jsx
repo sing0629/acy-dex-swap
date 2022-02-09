@@ -18,8 +18,6 @@ function Liquidity() {
         style={{ "padding-left": "15%", "padding-right": "15%" }}
       >
         <LiquidityComponent />
-        <hr />
-        <RemoveLiquidityComponent />
       </div>
     </Web3ReactProvider>
   );
