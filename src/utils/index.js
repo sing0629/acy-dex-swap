@@ -27,7 +27,7 @@ export const INITIAL_ALLOWED_SLIPPAGE = 50; //bips
 export const ROUTER_ADDRESS = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
 // export const ROUTER_ADDRESS = "0xF3726d6acfeda3E73a6F2328b948834f3Af39A2B";
 
-export const  supportedTokens= [
+export const supportedTokens = [
   {
     symbol: "USDC",
     address: "0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b",
@@ -39,32 +39,11 @@ export const  supportedTokens= [
     decimal: 18,
   },
   {
-    symbol: "WETH",
-    address: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
+    symbol: "TEST",
+    address: "0xAEd3ed6cF66E1CB13ab8DC312a0dC91bc0936721",
     decimal: 18,
-  },
-  {
-    symbol: "UNI",
-    address: "0x03e6c12ef405ac3f642b9184eded8e1322de1a9e",
-    decimal: 18,
-  },
-  {
-    symbol: "DAI",
-    address: "0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea",
-    decimal: 18,
-  },
-  {
-    symbol: "cDAI",
-    address: "0x6d7f0754ffeb405d23c51ce938289d4835be3b14",
-    decimal: 8,
-  },
-  {
-    symbol: "WBTC",
-    address: "0x577d296678535e4903d59a4c929b718e1d575e0a",
-    decimal: 8,
   },
 ];
-
 
 export function isAddress(value) {
   try {
@@ -101,14 +80,12 @@ export function getPairContract(pairAddress, library, account) {
   return getContract(pairAddress, IUniswapV2PairABI, library, account);
 }
 
-
 // return gas with 10% added margin in BigNumber
 export function calculateGasMargin(value) {
-
   console.log("just calculateGasMargin");
   return value
-      .mul(BigNumber.from(10000).add(BigNumber.from(1000)))
-      .div(BigNumber.from(10000));
+    .mul(BigNumber.from(10000).add(BigNumber.from(1000)))
+    .div(BigNumber.from(10000));
 }
 
 // check if hex string is zero
@@ -118,11 +95,11 @@ export function isZero(hexNumberString) {
 
 // return token allowance in BigNumber
 export async function getAllowance(
-    tokenAddress,
-    owner,
-    spender,
-    library,
-    account
+  tokenAddress,
+  owner,
+  spender,
+  library,
+  account
 ) {
   let tokenContract = getContract(tokenAddress, ERC20ABI, library, account);
   let allowance = await tokenContract.allowance(owner, spender);
@@ -144,48 +121,48 @@ export class ACYSwapErrorStatus {
 export function computeTradePriceBreakdown(trade) {
   const BASE_FEE = new Percent(JSBI.BigInt(30), JSBI.BigInt(10000));
   const ONE_HUNDRED_PERCENT = new Percent(
-      JSBI.BigInt(10000),
-      JSBI.BigInt(10000)
+    JSBI.BigInt(10000),
+    JSBI.BigInt(10000)
   );
   const INPUT_FRACTION_AFTER_FEE = ONE_HUNDRED_PERCENT.subtract(BASE_FEE);
 
   // for each hop in our trade, take away the x*y=k price impact from 0.3% fees
   // e.g. for 3 tokens/2 hops: 1 - ((1 - .03) * (1-.03))
   const realizedLPFee = !trade
-      ? undefined
-      : ONE_HUNDRED_PERCENT.subtract(
-          trade.route.pairs.reduce(
-              (currentFee) => currentFee.multiply(INPUT_FRACTION_AFTER_FEE),
-              ONE_HUNDRED_PERCENT
-          )
+    ? undefined
+    : ONE_HUNDRED_PERCENT.subtract(
+        trade.route.pairs.reduce(
+          (currentFee) => currentFee.multiply(INPUT_FRACTION_AFTER_FEE),
+          ONE_HUNDRED_PERCENT
+        )
       );
 
   // remove lp fees from price impact
   const priceImpactWithoutFeeFraction =
-      trade && realizedLPFee
-          ? trade.priceImpact.subtract(realizedLPFee)
-          : undefined;
+    trade && realizedLPFee
+      ? trade.priceImpact.subtract(realizedLPFee)
+      : undefined;
 
   // the x*y=k impact
   const priceImpactWithoutFeePercent = priceImpactWithoutFeeFraction
-      ? new Percent(
-          priceImpactWithoutFeeFraction?.numerator,
-          priceImpactWithoutFeeFraction?.denominator
+    ? new Percent(
+        priceImpactWithoutFeeFraction?.numerator,
+        priceImpactWithoutFeeFraction?.denominator
       )
-      : undefined;
+    : undefined;
 
   // the amount of the input that accrues to LPs
   const realizedLPFeeAmount =
-      realizedLPFee &&
-      trade &&
-      (trade.inputAmount instanceof TokenAmount
-          ? new TokenAmount(
-              trade.inputAmount.token,
-              realizedLPFee.multiply(trade.inputAmount.raw).quotient
-          )
-          : CurrencyAmount.ether(
-              realizedLPFee.multiply(trade.inputAmount.raw).quotient
-          ));
+    realizedLPFee &&
+    trade &&
+    (trade.inputAmount instanceof TokenAmount
+      ? new TokenAmount(
+          trade.inputAmount.token,
+          realizedLPFee.multiply(trade.inputAmount.raw).quotient
+        )
+      : CurrencyAmount.ether(
+          realizedLPFee.multiply(trade.inputAmount.raw).quotient
+        ));
 
   return {
     priceImpactWithoutFee: priceImpactWithoutFeePercent,
@@ -199,10 +176,10 @@ export async function getUserTokenBalanceRaw(token, account, library) {
     return await library.getBalance(account);
   } else {
     let contractToCheckForBalance = getContract(
-        token.address,
-        ERC20ABI,
-        library,
-        account
+      token.address,
+      ERC20ABI,
+      library,
+      account
     );
     return await contractToCheckForBalance.balanceOf(account);
   }
@@ -216,12 +193,12 @@ export async function getUserTokenBalance(token, chainId, account, library) {
   let tokenIsETH = symbol === "ETH";
 
   return formatUnits(
-      await getUserTokenBalanceRaw(
-          tokenIsETH ? ETHER : new Token(chainId, address, decimal, symbol),
-          account,
-          library
-      ),
-      decimal
+    await getUserTokenBalanceRaw(
+      tokenIsETH ? ETHER : new Token(chainId, address, decimal, symbol),
+      account,
+      library
+    ),
+    decimal
   );
 }
 
@@ -232,12 +209,12 @@ export function calculateSlippageAmount(value, slippage) {
   }
   return [
     JSBI.divide(
-        JSBI.multiply(value.raw, JSBI.BigInt(10000 - slippage)),
-        JSBI.BigInt(10000)
+      JSBI.multiply(value.raw, JSBI.BigInt(10000 - slippage)),
+      JSBI.BigInt(10000)
     ),
     JSBI.divide(
-        JSBI.multiply(value.raw, JSBI.BigInt(10000 + slippage)),
-        JSBI.BigInt(10000)
+      JSBI.multiply(value.raw, JSBI.BigInt(10000 + slippage)),
+      JSBI.BigInt(10000)
     ),
   ];
 }
@@ -250,11 +227,11 @@ export async function approve(tokenAddress, requiredAmount, library, account) {
   }
 
   let allowance = await getAllowance(
-      tokenAddress,
-      account, // owner
-      ROUTER_ADDRESS, //spender
-      library, // provider
-      account // active account
+    tokenAddress,
+    account, // owner
+    ROUTER_ADDRESS, //spender
+    library, // provider
+    account // active account
   );
 
   console.log(`ALLOWANCE FOR TOKEN ${tokenAddress}`);
@@ -268,55 +245,54 @@ export async function approve(tokenAddress, requiredAmount, library, account) {
     console.log("NOT ENOUGH ALLOWANCE");
     // try to get max allowance
     let estimatedGas = await tokenContract.estimateGas["approve"](
-        ROUTER_ADDRESS,
-        MaxUint256
-    ).catch(async() => {
+      ROUTER_ADDRESS,
+      MaxUint256
+    ).catch(async () => {
       // general fallback for tokens who restrict approval amounts
       useExact = true;
-      let result= await tokenContract.estimateGas.approve(
-          ROUTER_ADDRESS,
-          requiredAmount.raw.toString()
+      let result = await tokenContract.estimateGas.approve(
+        ROUTER_ADDRESS,
+        requiredAmount.raw.toString()
       );
       return result;
     });
 
     console.log(`Exact? ${useExact}`);
-    let res=await tokenContract.approve(
+    let res = await tokenContract
+      .approve(
         ROUTER_ADDRESS,
         useExact ? requiredAmount.raw.toString() : MaxUint256,
         {
           gasLimit: calculateGasMargin(estimatedGas),
         }
-    ).catch(()=>{
-      console.log("not approve success");
+      )
+      .catch(() => {
+        console.log("not approve success");
         return false;
-    });
+      });
     console.log(res);
 
-    if(res==false){
+    if (res == false) {
       return false;
-
     }
 
-    let flag=false;
-    
-    while(1){
+    let flag = false;
+
+    while (1) {
       let newAllowance = await getAllowance(
         tokenAddress,
         account, // owner
         ROUTER_ADDRESS, //spender
         library, // provider
         account // active account
-     );
-      
-      if(newAllowance.gte(BigNumber.from(requiredAmount))){
-        flag=true;
+      );
+
+      if (newAllowance.gte(BigNumber.from(requiredAmount))) {
+        flag = true;
         break;
-        
       }
     }
-    if(flag) return true;
-
+    if (flag) return true;
   } else {
     console.log("Allowance sufficient");
     return true;
@@ -325,18 +301,17 @@ export async function approve(tokenAddress, requiredAmount, library, account) {
 
 // should be used in polling to check status of token approval every n seconds
 export async function checkTokenIsApproved(
-    tokenAddress,
-    requiredAmount,
-    library,
-    account
+  tokenAddress,
+  requiredAmount,
+  library,
+  account
 ) {
-
   let allowance = await getAllowance(
-      tokenAddress,
-      account, // owner
-      ROUTER_ADDRESS, //spender
-      library, // provider
-      account // active account
+    tokenAddress,
+    account, // owner
+    ROUTER_ADDRESS, //spender
+    library, // provider
+    account // active account
   );
 
   console.log("REQUIRED AMOUNT:");
@@ -346,9 +321,6 @@ export async function checkTokenIsApproved(
   return allowance.gte(BigNumber.from(requiredAmount));
 }
 
-
-
-
 // get total supply of a ERC-20 token, can be liquidity token
 export async function getTokenTotalSupply(token, library, account) {
   let tokenContract = getContract(token.address, ERC20ABI, library, account);
@@ -357,5 +329,3 @@ export async function getTokenTotalSupply(token, library, account) {
 
   return parsedResult;
 }
-
-
