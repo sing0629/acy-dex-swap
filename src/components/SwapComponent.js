@@ -920,7 +920,7 @@ const SwapComponent = () => {
   }, [account]);
   return (
     <div>
-      <h1>swap</h1>
+      <h1>Swap</h1>
       <Alert variant="success">
         <Alert.Heading>Hey, nice to see you</Alert.Heading>
         <p>{account}</p>

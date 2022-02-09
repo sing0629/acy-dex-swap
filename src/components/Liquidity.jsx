@@ -3,7 +3,6 @@ import React from "react";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import LiquidityComponent from "./LiquidityComponent";
-import RemoveLiquidityComponent from "./RemoveLiquidityComponent";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/Liquidity.css";
 

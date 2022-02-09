@@ -2,7 +2,6 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import NotFound from "./components/NotFound";
 import Home from "./components/Home";
-import Transaction from "./components/Transaction";
 import Liquidity from "./components/Liquidity";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";

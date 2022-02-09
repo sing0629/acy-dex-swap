@@ -3,6 +3,9 @@
   padding: 0;
   box-sizing: border-box;
 }
+.Transaction {
+  text-align: left;
+}
 .home__image {
   width: 70%;
   margin-left: 230px;
